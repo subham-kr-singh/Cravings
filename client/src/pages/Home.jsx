@@ -1,9 +1,14 @@
-import React from "react";
+
+import Hero from "../components/Hero";
+import ResturentSection from "../components/ResturentSection";
 
 const Home = () => {
   return (
     <>
-      <div>Home</div>
+      <div className="">
+        <Hero />
+        <ResturentSection />
+      </div>
     </>
   );
 };

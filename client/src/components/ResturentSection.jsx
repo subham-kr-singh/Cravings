@@ -1,38 +1,41 @@
-import { useState } from "react";
-import ResturentCard from "./ResturentCard";
+import RestaurantCard from "./RestaurantCard";
 
-function ResturentSection() {
-  const [totalResturent, setTotalResturent] = useState(3);
+const restaurants = [1, 2, 3, 4, 5, 6];
+
+const RestaurantSection = () => {
   return (
-    <>
-      <div className="bg-linear-to-b from-orange-700 to-[#FCFCFC] w-full flex items-center justify-center p-10">
-        <div className="flex flex-col justify-center gap-8 w-full max-w-7xl px-4 sm:px-6 lg:px-8 h-full">
-          <div className="flex flex-col items-start justify-center gap-5">
-            <h1 className="text-4xl font-bold text-white">
-              Featured Restaurants
-            </h1>
-            <span className="text-xl font-light text-white">
-              {totalResturent} restaurants available
+    <section className="bg-(--background-color) py-20">
+      <div className="mx-auto max-w-7xl px-6">
+        {/* Heading */}
+        <div className="mb-14 flex items-end justify-between">
+          <div>
+            <span className="rounded-full bg-(--surface-color) px-4 py-2 font-medium text-(--primary-color)">
+              Featured
             </span>
+
+            <h2 className="mt-5 text-5xl font-bold text-(--text-color)">
+              Popular Restaurants
+            </h2>
+
+            <p className="mt-3 text-lg text-(--text-light)">
+              Discover the highest-rated restaurants near you.
+            </p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10 w-full">
-            <ResturentCard />
-            <ResturentCard />
-            <ResturentCard />
-            <ResturentCard />
-            <ResturentCard />
-            <ResturentCard />
-            <ResturentCard />
-            <ResturentCard />
-            <ResturentCard />
-            <ResturentCard />
-            <ResturentCard />
-            <ResturentCard />
-          </div>
+
+          <button className="block rounded-xl border border-(--primary-color) px-6 py-3 font-medium text-(--primary-color) transition hover:bg-(--primary-color) hover:text-white">
+            View All
+          </button>
+        </div>
+
+        {/* Cards */}
+        <div className="grid gap-8 grid-cols-3">
+          {restaurants.map((item) => (
+            <RestaurantCard />
+          ))}
         </div>
       </div>
-    </>
+    </section>
   );
-}
+};
 
-export default ResturentSection;
+export default RestaurantSection;
