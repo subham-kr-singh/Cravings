@@ -5,8 +5,8 @@ function ResturentSection() {
   const [totalResturent, setTotalResturent] = useState(3);
   return (
     <>
-      <div className="bg-linear-to-b from-orange-700 to-[#FCFCFC] w-full flex items-center justify-center p-10 h-ful">
-        <div className="flex flex-col justify-center gap-8 w-full px-75 md:px-5 lg:px-50 h-full">
+      <div className="bg-linear-to-b from-orange-700 to-[#FCFCFC] w-full flex items-center justify-center p-10">
+        <div className="flex flex-col justify-center gap-8 w-full max-w-7xl px-4 sm:px-6 lg:px-8 h-full">
           <div className="flex flex-col items-start justify-center gap-5">
             <h1 className="text-4xl font-bold text-white">
               Featured Restaurants
@@ -15,7 +15,16 @@ function ResturentSection() {
               {totalResturent} restaurants available
             </span>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 items-center justify-center h-100">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10 w-full">
+            <ResturentCard />
+            <ResturentCard />
+            <ResturentCard />
+            <ResturentCard />
+            <ResturentCard />
+            <ResturentCard />
+            <ResturentCard />
+            <ResturentCard />
+            <ResturentCard />
             <ResturentCard />
             <ResturentCard />
             <ResturentCard />

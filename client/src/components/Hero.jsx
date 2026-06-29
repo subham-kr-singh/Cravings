@@ -6,7 +6,7 @@ function Hero() {
       <span className="text-5xl font-bold text-center">
         Your Favorite Food, <br /> Delivered Fast
       </span>
-      <p className="text-xl">
+      <p className="text-xl text-center">
         Order from thousands of restaurants and get it delivered to your
         doorstep
       </p>
