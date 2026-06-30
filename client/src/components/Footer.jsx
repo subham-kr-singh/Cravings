@@ -146,10 +146,6 @@ const Footer = () => {
               <Link to="/" className="hover:text-(--accent-color)">
                 Terms of Service
               </Link>
-
-              <Link to="/" className="hover:text-(--accent-color)">
-                Cookies
-              </Link>
             </div>
           </div>
         </div>

@@ -37,7 +37,6 @@ const Register = () => {
       gender: registerData.gender,
       dob: registerData.dob,
       password: registerData.password,
-      conformPassword: registerData.conformPassword,
     };
 
     try {
@@ -256,7 +255,7 @@ const Register = () => {
           </div>
         </div>
 
-        {/* ================= RIGHT HERO ================= */}
+        {/* ======================== RIGHT FORM ========================= */}
         <div
           className="relative flex items-end bg-cover bg-center"
           style={{

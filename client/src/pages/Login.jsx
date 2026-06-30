@@ -9,9 +9,10 @@ const Login = () => {
   });
 
   const handleChange = (e) => {
+    const { name, value } = e.target;
     setLoginData({
       ...loginData,
-      [e.target.name]: e.target.value,
+      [name]: value,
     });
   };
 
@@ -122,7 +123,7 @@ const Login = () => {
               <Link
                 to="/register"
                 className="font-semibold text-(--primary-color)">
-                Sign Up
+                Register
               </Link>
             </p>
           </form>
