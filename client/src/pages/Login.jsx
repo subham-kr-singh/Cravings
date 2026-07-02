@@ -1,8 +1,12 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import api from "../config/api.config";
+import toast from "react-hot-toast";
+import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
+  const { setIsLogin, isLogin, setUser } = useAuth();
+  const Navigate = useNavigate();
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
@@ -32,9 +36,17 @@ const Login = () => {
     try {
       const res = await api.post("/auth/login", payload);
 
-      alert(res.data.message);
+      toast.success(res.data.message);
+      setIsLogin(true);
+      sessionStorage.setItem("UserData", JSON.stringify(res.data.data));
+      setUser(res.data.data);
+      setIsLogin(true);
+      Navigate("/user/dashboard");
     } catch (err) {
-      alert(err.response?.data?.message || "Invalid email or password.");
+      const errorMessage =
+        err.response?.data?.message || "Invalid email or password.";
+
+      toast.error(errorMessage);
     }
   };
 

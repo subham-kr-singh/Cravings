@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../config/api.config.js";
+import toast from "react-hot-toast";
 
 const Register = () => {
   const [registerData, setRegisterData] = useState({
@@ -42,7 +43,7 @@ const Register = () => {
     try {
       const res = await api.post("/auth/register", payload);
 
-      alert(res.data.message || "Registration successful!");
+      toast.success(res.data.message || "Registration successful!");
 
       setRegisterData({
         fullName: "",
@@ -54,7 +55,7 @@ const Register = () => {
         conformPassword: "",
       });
     } catch (error) {
-      alert(
+      toast.error(
         error.response?.data?.message ||
           "Something went wrong. Please try again.",
       );
