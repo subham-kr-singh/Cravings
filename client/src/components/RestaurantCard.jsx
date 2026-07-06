@@ -2,7 +2,7 @@ import { FaStar } from "react-icons/fa";
 import { IoTimeOutline } from "react-icons/io5";
 import { MdLocationOn } from "react-icons/md";
 
-const RestaurantCard = () => {
+const RestaurantCard = (prop) => {
   return (
     <div className="group overflow-hidden rounded-3xl bg-white shadow-md transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
       {/* Image */}
@@ -62,3 +62,5 @@ const RestaurantCard = () => {
 };
 
 export default RestaurantCard;
+
+

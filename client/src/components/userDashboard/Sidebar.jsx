@@ -7,7 +7,7 @@ import {
 import { PiListHeart } from "react-icons/pi";
 
 const MenuItems = [
-  { name: "Overviews", Icons: <MdOutlineSpaceDashboard /> },
+  { name: "Overview", Icons: <MdOutlineSpaceDashboard /> },
   { name: "Orders", Icons: <MdOutlineFastfood /> },
   { name: "WishList", Icons: <PiListHeart /> },
   { name: "Settings", Icons: <MdOutlineSettings /> },

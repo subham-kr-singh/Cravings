@@ -22,9 +22,11 @@ const userSchema = new mongoose.Schema(
         photo: {
             url: {
                 type: String,
+                required: true,
             },
             publicId: {
-            }
+                type: String,
+            },
         },
         dob: {
             type: Date,

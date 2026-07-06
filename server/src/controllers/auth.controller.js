@@ -1,6 +1,6 @@
-import JWT from "jsonwebtoken";
 import User from "../models/user.model.js";
 import bcrypt from "bcrypt";
+import { genToken } from '../utils/auth.service.js'
 
 export const register = async (req, res, next) => {
     try {
@@ -86,10 +86,9 @@ export const login = async (req, res, next) => {
 
         const payload = existingUser.toObject();
 
-        const token = await JWT.sign(payload, process.env.JWT_SECRET)
-        // res.status(200).json({ message: "User logged in successfully", data: existingUserObj });
+        await genToken(payload, res)
 
-        res.status(200).cookie("token", token).json({ message: "User logged in successfully", data: payload })
+        res.status(200).json({ message: "User logged in successfully", data: payload })
 
     } catch (error) {
         console.log(error.message);
@@ -97,7 +96,6 @@ export const login = async (req, res, next) => {
     }
 }
 
-
 export const logout = (req, res) => {
-    res.json({ message: "Logout Successfull from controller" })
+    res.clearCookie("CravingToken", { maxAge: 0 }).status(200).json({ message: "Logout Successfull from controller" })
 }

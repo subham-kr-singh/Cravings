@@ -10,3 +10,7 @@
     --text-light: #6b7280;
     --border-color: #f7d87f;
 }
+
+button {
+    cursor: pointer;
+}
