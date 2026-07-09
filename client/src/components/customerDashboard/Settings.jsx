@@ -61,6 +61,7 @@ const Setting = () => {
     if (!file) return;
 
     setProfilePic(file);
+    profilePicPreview && URL.revokeObjectURL(profilePicPreview);
     setProfilePicPreview(URL.createObjectURL(file));
   };
 
@@ -73,11 +74,10 @@ const Setting = () => {
       payload.append("fullName", formData.fullName);
       payload.append("email", formData.email.toLowerCase());
       payload.append("phone", formData.phone);
-      
+
       if (profilePic) {
         payload.append("displayPic", profilePic);
       }
-
       const response = await api.put("/user/edit-profile", payload);
       const updatedUser = response.data.data;
 
@@ -121,7 +121,6 @@ const Setting = () => {
   return (
     <div className="min-h-screen bg-(--background-color) p-8">
       <div className="mx-auto max-w-5xl rounded-2xl border border-(--border-color) bg-white shadow-lg">
-        
         {/* Header */}
         <div className="flex items-center justify-between border-b border-(--border-color) p-6">
           <div>
@@ -136,8 +135,7 @@ const Setting = () => {
           {!editingProfile ? (
             <button
               onClick={() => setEditingProfile(true)}
-              className="flex items-center justify-center gap-2 rounded-lg bg-(--primary-color) px-5 py-2.5 text-white transition hover:bg-(--secondary-color)"
-            >
+              className="flex items-center justify-center gap-2 rounded-lg bg-(--primary-color) px-5 py-2.5 text-white transition hover:bg-(--secondary-color)">
               <MdEdit className="text-lg" />
               Edit Profile
             </button>
@@ -146,15 +144,13 @@ const Setting = () => {
               <button
                 onClick={handleSaveProfile}
                 disabled={isSavingProfile}
-                className="rounded-lg bg-(--primary-color) px-5 py-2.5 text-white transition hover:bg-(--secondary-color) disabled:cursor-not-allowed disabled:opacity-60"
-              >
+                className="rounded-lg bg-(--primary-color) px-5 py-2.5 text-white transition hover:bg-(--secondary-color) disabled:cursor-not-allowed disabled:opacity-60">
                 {isSavingProfile ? "Saving..." : "Save"}
               </button>
 
               <button
                 onClick={handleCancelProfile}
-                className="rounded-lg border border-(--primary-color) px-5 py-2.5 text-(--primary-color) transition hover:bg-(--primary-color) hover:text-white"
-              >
+                className="rounded-lg border border-(--primary-color) px-5 py-2.5 text-(--primary-color) transition hover:bg-(--primary-color) hover:text-white">
                 Cancel
               </button>
             </div>
@@ -163,7 +159,6 @@ const Setting = () => {
 
         {/* Body Layout */}
         <div className="grid gap-10 p-8 md:grid-cols-[250px_1fr]">
-          
           {/* Avatar Area */}
           <div className="flex flex-col items-center">
             <div className="relative">
@@ -177,8 +172,7 @@ const Setting = () => {
                 <>
                   <label
                     htmlFor="profilePic"
-                    className="absolute bottom-2 right-2 cursor-pointer rounded-full border border-(--border-color) bg-(--surface-color) p-3 transition hover:bg-(--accent-color)"
-                  >
+                    className="absolute bottom-2 right-2 cursor-pointer rounded-full border border-(--border-color) bg-(--surface-color) p-3 transition hover:bg-(--accent-color)">
                     <MdOutlineAddAPhoto className="text-2xl text-(--text-color)" />
                   </label>
                   <input
@@ -222,7 +216,7 @@ const Setting = () => {
                 name="email"
                 value={formData.email}
                 onChange={handleProfileChange}
-                disabled={true} 
+                disabled={true}
                 className="w-full rounded-lg border border-gray-200 bg-gray-50/50 px-4 py-3 text-gray-400 cursor-not-allowed outline-none"
               />
             </div>
@@ -245,7 +239,6 @@ const Setting = () => {
               />
             </div>
           </div>
-
         </div>
       </div>
     </div>

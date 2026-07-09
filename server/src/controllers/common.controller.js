@@ -22,6 +22,8 @@ export const EditUserProfile = async (req, res, next) => {
         }
 
         if (newPhoto) {
+            existingUser?.photo?.publicId && (await cloudinary.uploader.destroy(existingUser.photo.publicId));
+
             const b64 = Buffer.from(newPhoto.buffer).toString("base64");
             const dataURI = `data:${newPhoto.mimetype};base64,${b64}`;
             // console.log(dataURI.slice(0, 100));
@@ -32,7 +34,7 @@ export const EditUserProfile = async (req, res, next) => {
                 height: 500,
                 crop: "fill",
             });
-            
+
             existingUser.photo.url = result.secure_url;
             existingUser.photo.publicId = result.public_id;
         }
@@ -50,3 +52,20 @@ export const EditUserProfile = async (req, res, next) => {
         next();
     }
 };
+
+
+export const updateUserPassword = async (req, res, next) => {
+    try {
+        const { oldPassword, newpassword } = req.body;
+
+        if (!oldPassword || !newpassword) {
+            const error = new Error("All field required");
+            next(error);
+        }
+
+        
+    } catch (error) {
+        console.log(error.message);
+        next();
+    }
+}
