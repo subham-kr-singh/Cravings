@@ -14,15 +14,15 @@ import cors from 'cors';
 const app = express();
 
 // middleware
-app.use(cors({ origin: "http://localhost:5173", credentials: true }))
-app.use(express.json())
-app.use(cookieParser())
-app.use(morgan("dev"))
+app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+app.use(express.json());
+app.use(cookieParser());
+app.use(morgan("dev"));
 
 // Routers
 app.use("/auth", AuthRouter);
-app.use("/public", publicRouter)
-app.use("/user", userRouter )
+app.use("/public", publicRouter);
+app.use("/user", userRouter );
 
 // Default Error handler
 app.use((err, req, res, next) => {
