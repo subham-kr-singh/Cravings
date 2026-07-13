@@ -5,7 +5,7 @@ import AuthRouter from './src/routers/auth.route.js';
 import connectDB from './src/config/dbConnection.config.js';
 import cloudinary from './src/config/cloudinary.conifg.js'
 import publicRouter from './src/routers/public.route.js';
-import userRouter from './src/routers/user.route.js'
+import userRouter from './src/routers/common.route.js'
 import cookieParser from 'cookie-parser';
 import { AuthProtect } from './src/middlewares/auth.middleware.js';
 import morgan from 'morgan';

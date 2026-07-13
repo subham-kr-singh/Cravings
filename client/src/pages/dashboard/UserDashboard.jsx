@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import Sidebar from "../../components/userDashboard/Sidebar";
-import Overview from "../../components/userDashboard/Overview";
-import Orders from "../../components/userDashboard/Orders";
-import WishList from "../../components/userDashboard/WishList";
-import Settings from "../../components/userDashboard/Settings";
+import Sidebar from "../../components/customerDashboard/Sidebar";
+import Overview from "../../components/customerDashboard/Overview";
+import Orders from "../../components/customerDashboard/Orders";
+import WishList from "../../components/customerDashboard/WishList";
+import Settings from "../../components/customerDashboard/Settings";
 
 const UserDashboard = () => {
   const [active, setActive] = useState("Overview");

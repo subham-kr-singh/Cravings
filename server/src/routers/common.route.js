@@ -1,5 +1,5 @@
 import express from 'express'
-import { EditUserProfile } from '../controllers/user.controller.js'
+import { EditUserProfile } from '../controllers/common.controller.js'
 import { AuthProtect } from '../middlewares/auth.middleware.js'
 import multer from 'multer'
 
