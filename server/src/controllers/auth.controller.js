@@ -99,3 +99,30 @@ export const login = async (req, res, next) => {
 export const logout = (req, res) => {
     res.clearCookie("CravingToken", { maxAge: 0 }).status(200).json({ message: "Logout Successfull from controller" })
 }
+
+export const SendOtp = async (req, res, next) => {
+    try {
+        const { email } = req.body;
+    } catch (error) {
+        console.log(error.message);
+        next(error);
+    }
+}
+
+export const VerifyOtp = async (req, res, next) => {
+    try {
+        const { email, otp } = req.body;
+    } catch (error) {
+        console.log(error.message);
+        next(error);
+    }
+}
+
+export const ResetPassword = async (req, res, next) => {
+    try {
+        const { email, newPassword } = req.body;
+    } catch (error) {
+        console.log(error.message);
+        next(error);
+    }
+}

@@ -1,6 +1,7 @@
 import express from 'express';
 
-import { login, register, logout } from '../controllers/auth.controller.js';
+import { login, register, logout, SendOtp, VerifyOtp, ResetPassword } from '../controllers/auth.controller.js';
+import { OTPAuthProtect } from '../middlewares/auth.middleware.js';
 
 const router = express.Router();
 

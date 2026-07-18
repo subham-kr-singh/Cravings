@@ -32,6 +32,17 @@ export const AuthProtect = async (req, res, next) => {
     }
 }
 
+export const OTPAuthProtect = async (req, res, next) => {
+    try {
+        const token = req.cookies.CravingToken;
+    } catch (error) {
+        console.log(error.message)
+        error = new Error("Unknown error from middleware")
+        error.statusCode = 500
+        return next(error);
+    }
+}
+
 export const RestaurantAuthProtect = async (req, res, next) => {
     try {
         const token = req.cookies.CravingToken;
