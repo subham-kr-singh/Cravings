@@ -36,7 +36,7 @@ export const RestaurantGetData = async (req, res, next) => {
         }
     } catch (error) {
         console.log(error.message);
-        next();
+        return next(error);
     }
 };
 
@@ -49,13 +49,13 @@ export const RestaurantUpdateProfile = async (req, res, next) => {
 
         const dataKeys = Object.keys(restaurantDataFromFE);
 
-        dataKeys.forEach((key) => {
+        for (const key of dataKeys) {
             if (!restaurantDataFromFE[key]) {
                 const error = new Error(`Missing required field: ${key}`);
                 error.statusCode = 400;
                 return next(error);
             }
-        });
+        }
 
         const existingRestaurant = await Restaurant.findOne({
             managerId: currentUser._id,
@@ -121,6 +121,6 @@ export const RestaurantUpdateProfile = async (req, res, next) => {
         }
     } catch (error) {
         console.log(error.message);
-        next();
+        return next(error);
     }
 };

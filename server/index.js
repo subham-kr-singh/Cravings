@@ -10,7 +10,7 @@ import cookieParser from 'cookie-parser';
 import { AuthProtect } from './src/middlewares/auth.middleware.js';
 import morgan from 'morgan';
 import cors from 'cors';
-
+import restaurantRouter from './src/routers/restaurent.route.js';
 const app = express();
 
 // middleware
@@ -23,6 +23,7 @@ app.use(morgan("dev"));
 app.use("/auth", AuthRouter);
 app.use("/public", publicRouter);
 app.use("/user", userRouter );
+app.use("/restaurant", restaurantRouter);
 
 // Default Error handler
 app.use((err, req, res, next) => {

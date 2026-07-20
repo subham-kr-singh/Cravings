@@ -6,7 +6,7 @@ import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
   const { setIsLogin, isLogin, setUser } = useAuth();
-  const Navigate = useNavigate();
+  const navigate = useNavigate();
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
@@ -40,8 +40,15 @@ const Login = () => {
       setIsLogin(true);
       sessionStorage.setItem("UserData", JSON.stringify(res.data.data));
       setUser(res.data.data);
-      setIsLogin(true);
-      Navigate("/user/dashboard");
+      
+      res.data.data.userType === "restaurant" &&
+        navigate("/restaurant-dashboard");
+
+      res.data.data.userType === "rider" && navigate("/rider-dashboard");
+
+      res.data.data.userType === "admin" && navigate("/admin-dashboard");
+
+      res.data.data.userType === "customer" && navigate("/customer-dashboard");
     } catch (err) {
       const errorMessage =
         err.response?.data?.message || "Invalid email or password.";

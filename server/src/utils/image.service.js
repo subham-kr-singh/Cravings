@@ -1,4 +1,4 @@
-import cloudinary from "../config/cloudinary.config.js";
+import cloudinary from "../config/cloudinary.conifg.js";
 
 export const uploadMultipleImages = async (Images, storageLocation) => {
     try {
@@ -38,7 +38,7 @@ export const deleteMultipleImages = async (Images) => {
     }
 };
 
-const deleteSingleImage = async (image) => {
+export const deleteSingleImage = async (image) => {
     try {
         await cloudinary.uploader.destroy(image.publicId);
     } catch (error) {
@@ -47,7 +47,7 @@ const deleteSingleImage = async (image) => {
     }
 };
 
-const UploadSingleImage = async (image, storageLocation) => {
+export const uploadSingleImage = async (image, storageLocation) => {
     try {
         const b64 = Buffer.from(image.buffer).toString("base64");
         const dataURI = `data:${image.mimetype};base64,${b64}`;

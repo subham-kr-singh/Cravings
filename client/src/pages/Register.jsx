@@ -1,72 +1,119 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import api from "../config/api.config.js";
 import toast from "react-hot-toast";
 
 const Register = () => {
-  const [registerData, setRegisterData] = useState({
+  const { userType } = useParams(); // Get userType from URL params (if needed)
+  const navigate = useNavigate();
+  
+  const [formData, setFormData] = useState({
+    userType: userType || "customer",
     fullName: "",
     email: "",
     phone: "",
     gender: "",
     dob: "",
     password: "",
-    conformPassword: "",
+    confirmPassword: "",
+    agreeTerms: false,
   });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
 
-    setRegisterData((prev) => ({
+  // Sync state when URL param changes
+  React.useEffect(() => {
+    if (userType && ["customer", "restaurant", "rider"].includes(userType)) {
+      setFormData((prev) => ({ ...prev, userType }));
+    }
+  }, [userType]);
+
+  const handleInputChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: type === "checkbox" ? checked : value,
     }));
+  };
+
+  const handleUserTypeChange = (e) => {
+    const newType = e.target.value;
+    setFormData((prev) => ({
+      ...prev,
+      userType: newType,
+    }));
+    navigate(`/register/${newType}`, { replace: true });
+  };
+
+  const validateForm = (data) => {
+    const newErrors = {};
+
+    if (!data.fullName.trim()) newErrors.fullName = "Full name is required";
+    if (!data.email.trim()) newErrors.email = "Email is required";
+    if (!data.phone.trim()) newErrors.phone = "Phone number is required";
+    if (!data.gender) newErrors.gender = "Gender is required";
+    if (!data.dob) newErrors.dob = "Date of birth is required";
+    if (!data.password || data.password.length < 6)
+      newErrors.password = "Password must be at least 6 characters";
+    if (!data.confirmPassword)
+      newErrors.confirmPassword = "Please confirm your password";
+    if (data.password !== data.confirmPassword)
+      newErrors.confirmPassword = "Passwords do not match";
+    if (!data.agreeTerms)
+      newErrors.agreeTerms = "You must agree to terms and conditions";
+
+    return newErrors;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (registerData.password !== registerData.conformPassword) {
-      alert("Passwords do not match!");
+    setErrors({});
+    
+    const validationErrors = validateForm(formData);
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
       return;
     }
 
-    const payload = {
-      fullName: registerData.fullName,
-      email: registerData.email.toLowerCase(),
-      phone: registerData.phone,
-      gender: registerData.gender,
-      dob: registerData.dob,
-      password: registerData.password,
-    };
+    setLoading(true);
 
     try {
-      const res = await api.post("/auth/register", payload);
-
+      const res = await api.post("/auth/register", {
+        ...formData,
+        email: formData.email.toLowerCase(),
+      });
+      
       toast.success(res.data.message || "Registration successful!");
-
-      setRegisterData({
+      
+      setFormData({
+        userType: "customer",
         fullName: "",
         email: "",
         phone: "",
         gender: "",
         dob: "",
         password: "",
-        conformPassword: "",
+        confirmPassword: "",
+        agreeTerms: false,
       });
+      
+      navigate("/login");
     } catch (error) {
       toast.error(
         error.response?.data?.message ||
-          "Something went wrong. Please try again.",
+          "Unknown error occurred during registration. Please try again."
       );
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <section className="min-h-screen bg-(--background-color)">
-      <div className="grid min-h-screen grid-cols-2">
+      <div className="grid min-h-screen grid-cols-1 lg:grid-cols-2">
         {/* ================= LEFT FORM ================= */}
-        <div className="flex items-center justify-center px-16 py-12">
+        <div className="flex items-center justify-center px-8 py-12 lg:px-16 overflow-y-auto">
           <div className="w-full max-w-lg">
             <span className="rounded-full bg-(--surface-color) px-4 py-2 text-sm font-medium text-(--primary-color)">
               🍔 Join Craving
@@ -82,22 +129,48 @@ const Register = () => {
             </p>
 
             <form onSubmit={handleSubmit} className="mt-10 space-y-5">
+              
+              {/* User Type Selection */}
+              <div>
+                <label className="mb-2 block text-sm font-semibold text-(--text-color)">
+                  Register as
+                </label>
+                <div className="flex gap-5">
+                  {["customer", "restaurant", "rider"].map((type) => (
+                    <label key={type} className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="userType"
+                        value={type}
+                        checked={formData.userType === type}
+                        onChange={handleUserTypeChange}
+                        className="cursor-pointer accent-(--primary-color)"
+                      />
+                      <span className="capitalize text-sm text-(--text-color)">
+                        {type}
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
               {/* Full Name */}
               <div>
                 <label className="mb-2 block text-sm font-semibold text-(--text-color)">
                   Full Name
                 </label>
-
                 <input
                   type="text"
                   name="fullName"
                   autoComplete="name"
                   placeholder="Enter your full name"
-                  value={registerData.fullName}
-                  onChange={handleChange}
-                  required
-                  className="w-full rounded-xl border border-(--border-color) bg-white px-4 py-3 text-(--text-color) placeholder:text-gray-400 outline-none transition-all focus:border-(--primary-color)"
+                  value={formData.fullName}
+                  onChange={handleInputChange}
+                  className={`w-full rounded-xl border bg-white px-4 py-3 text-(--text-color) placeholder:text-gray-400 outline-none transition-all focus:border-(--primary-color) ${
+                    errors.fullName ? "border-red-500" : "border-(--border-color)"
+                  }`}
                 />
+                {errors.fullName && <span className="text-red-500 text-xs mt-1 block">{errors.fullName}</span>}
               </div>
 
               {/* Email */}
@@ -105,17 +178,18 @@ const Register = () => {
                 <label className="mb-2 block text-sm font-semibold text-(--text-color)">
                   Email Address
                 </label>
-
                 <input
                   type="email"
                   name="email"
                   autoComplete="email"
                   placeholder="Enter your email address"
-                  value={registerData.email}
-                  onChange={handleChange}
-                  required
-                  className="w-full rounded-xl border border-(--border-color) bg-white px-4 py-3 text-(--text-color) placeholder:text-gray-400 outline-none transition-all focus:border-(--primary-color)"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  className={`w-full rounded-xl border bg-white px-4 py-3 text-(--text-color) placeholder:text-gray-400 outline-none transition-all focus:border-(--primary-color) ${
+                    errors.email ? "border-red-500" : "border-(--border-color)"
+                  }`}
                 />
+                {errors.email && <span className="text-red-500 text-xs mt-1 block">{errors.email}</span>}
               </div>
 
               {/* Phone & Gender */}
@@ -124,55 +198,57 @@ const Register = () => {
                   <label className="mb-2 block text-sm font-semibold text-(--text-color)">
                     Mobile Number
                   </label>
-
                   <input
                     type="tel"
                     name="phone"
                     autoComplete="tel"
                     maxLength={10}
                     placeholder="Enter your mobile number"
-                    value={registerData.phone}
-                    onChange={handleChange}
-                    required
-                    className="w-full rounded-xl border border-(--border-color) bg-white px-4 py-3 text-(--text-color) placeholder:text-gray-400 outline-none transition-all focus:border-(--primary-color)"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    className={`w-full rounded-xl border bg-white px-4 py-3 text-(--text-color) placeholder:text-gray-400 outline-none transition-all focus:border-(--primary-color) ${
+                      errors.phone ? "border-red-500" : "border-(--border-color)"
+                    }`}
                   />
+                  {errors.phone && <span className="text-red-500 text-xs mt-1 block">{errors.phone}</span>}
                 </div>
 
                 <div>
                   <label className="mb-2 block text-sm font-semibold text-(--text-color)">
                     Gender
                   </label>
-
                   <select
                     name="gender"
-                    value={registerData.gender}
-                    onChange={handleChange}
-                    required
-                    className="w-full rounded-xl border border-(--border-color) bg-white px-4 py-3 text-(--text-color) outline-none transition-all focus:border-(--primary-color)">
+                    value={formData.gender}
+                    onChange={handleInputChange}
+                    className={`w-full rounded-xl border bg-white px-4 py-3 text-(--text-color) outline-none transition-all focus:border-(--primary-color) ${
+                      errors.gender ? "border-red-500" : "border-(--border-color)"
+                    }`}
+                  >
                     <option value="">Select your gender</option>
-
                     <option value="male">Male</option>
-
                     <option value="female">Female</option>
-
                     <option value="other">Other</option>
                   </select>
+                  {errors.gender && <span className="text-red-500 text-xs mt-1 block">{errors.gender}</span>}
                 </div>
               </div>
+
               {/* Date of Birth */}
               <div>
                 <label className="mb-2 block text-sm font-semibold text-(--text-color)">
                   Date of Birth
                 </label>
-
                 <input
                   type="date"
                   name="dob"
-                  value={registerData.dob}
-                  onChange={handleChange}
-                  required
-                  className="w-full rounded-xl border border-(--border-color) bg-white px-4 py-3 text-(--text-color) outline-none transition-all focus:border-(--primary-color)"
+                  value={formData.dob}
+                  onChange={handleInputChange}
+                  className={`w-full rounded-xl border bg-white px-4 py-3 text-(--text-color) outline-none transition-all focus:border-(--primary-color) ${
+                    errors.dob ? "border-red-500" : "border-(--border-color)"
+                  }`}
                 />
+                {errors.dob && <span className="text-red-500 text-xs mt-1 block">{errors.dob}</span>}
               </div>
 
               {/* Password */}
@@ -180,21 +256,24 @@ const Register = () => {
                 <label className="mb-2 block text-sm font-semibold text-(--text-color)">
                   Password
                 </label>
-
                 <input
                   type="password"
                   name="password"
                   autoComplete="new-password"
                   placeholder="Create a strong password"
-                  value={registerData.password}
-                  onChange={handleChange}
-                  required
-                  className="w-full rounded-xl border border-(--border-color) bg-white px-4 py-3 text-(--text-color) placeholder:text-gray-400 outline-none transition-all focus:border-(--primary-color)"
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  className={`w-full rounded-xl border bg-white px-4 py-3 text-(--text-color) placeholder:text-gray-400 outline-none transition-all focus:border-(--primary-color) ${
+                    errors.password ? "border-red-500" : "border-(--border-color)"
+                  }`}
                 />
-
-                <p className="mt-2 text-xs text-(--text-light)">
-                  Use at least 8 characters with letters and numbers.
-                </p>
+                {errors.password ? (
+                  <span className="text-red-500 text-xs mt-1 block">{errors.password}</span>
+                ) : (
+                  <p className="mt-2 text-xs text-(--text-light)">
+                    Use at least 6 characters.
+                  </p>
+                )}
               </div>
 
               {/* Confirm Password */}
@@ -202,45 +281,56 @@ const Register = () => {
                 <label className="mb-2 block text-sm font-semibold text-(--text-color)">
                   Confirm Password
                 </label>
-
                 <input
                   type="password"
-                  name="conformPassword"
+                  name="confirmPassword"
                   autoComplete="new-password"
                   placeholder="Re-enter your password"
-                  value={registerData.conformPassword}
-                  onChange={handleChange}
-                  required
-                  className="w-full rounded-xl border border-(--border-color) bg-white px-4 py-3 text-(--text-color) placeholder:text-gray-400 outline-none transition-all focus:border-(--primary-color)"
+                  value={formData.confirmPassword}
+                  onChange={handleInputChange}
+                  className={`w-full rounded-xl border bg-white px-4 py-3 text-(--text-color) placeholder:text-gray-400 outline-none transition-all focus:border-(--primary-color) ${
+                    errors.confirmPassword ? "border-red-500" : "border-(--border-color)"
+                  }`}
                 />
+                {errors.confirmPassword && <span className="text-red-500 text-xs mt-1 block">{errors.confirmPassword}</span>}
               </div>
 
               {/* Terms */}
-              <div className="flex items-start gap-3">
-                <input
-                  type="checkbox"
-                  required
-                  className="mt-1 accent-(--primary-color)"
-                />
-
-                <p className="text-sm leading-6 text-(--text-light)">
-                  I agree to the{" "}
-                  <span className="cursor-pointer font-semibold text-(--primary-color) hover:underline">
-                    Terms & Conditions
-                  </span>{" "}
-                  and{" "}
-                  <span className="cursor-pointer font-semibold text-(--primary-color) hover:underline">
-                    Privacy Policy
-                  </span>
-                  .
-                </p>
+              <div className="flex flex-col gap-1">
+                <div className="flex items-start gap-3">
+                  <input
+                    type="checkbox"
+                    name="agreeTerms"
+                    checked={formData.agreeTerms}
+                    onChange={handleInputChange}
+                    className="mt-1 cursor-pointer accent-(--primary-color)"
+                  />
+                  <p className="text-sm leading-6 text-(--text-light)">
+                    I agree to the{" "}
+                    <span className="cursor-pointer font-semibold text-(--primary-color) hover:underline">
+                      Terms & Conditions
+                    </span>{" "}
+                    and{" "}
+                    <span className="cursor-pointer font-semibold text-(--primary-color) hover:underline">
+                      Privacy Policy
+                    </span>
+                    .
+                  </p>
+                </div>
+                {errors.agreeTerms && <span className="text-red-500 text-xs ml-7">{errors.agreeTerms}</span>}
               </div>
 
               {/* Submit Button */}
               <button
                 type="submit"
-                className="w-full rounded-xl bg-(--primary-color) py-3.5 text-lg font-semibold text-white transition-all duration-300 hover:bg-(--secondary-color) hover:shadow-lg">
-                Create Account
+                disabled={loading}
+                className={`w-full rounded-xl py-3.5 text-lg font-semibold text-white transition-all duration-300 ${
+                  loading 
+                    ? "bg-gray-400 cursor-not-allowed" 
+                    : "bg-(--primary-color) hover:bg-(--secondary-color) hover:shadow-lg"
+                }`}
+              >
+                {loading ? "Registering..." : "Create Account"}
               </button>
 
               {/* Login Link */}
@@ -248,7 +338,8 @@ const Register = () => {
                 Already have an account?{" "}
                 <Link
                   to="/login"
-                  className="font-semibold text-(--primary-color) hover:underline">
+                  className="font-semibold text-(--primary-color) hover:underline"
+                >
                   Sign In
                 </Link>
               </p>
@@ -258,11 +349,12 @@ const Register = () => {
 
         {/* ======================== RIGHT FORM ========================= */}
         <div
-          className="relative flex items-end bg-cover bg-center"
+          className="relative hidden lg:flex items-end bg-cover bg-center"
           style={{
             backgroundImage:
               "url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1600&auto=format&fit=crop')",
-          }}>
+          }}
+        >
           <div className="absolute inset-0 bg-black/55"></div>
 
           <div className="relative z-10 max-w-lg p-16 text-white">

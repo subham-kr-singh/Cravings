@@ -10,6 +10,11 @@ const Navbar = () => {
   const navigate = useNavigate();
   const { user, isLogin, setIsLogin, setUser } = useAuth();
 
+  const getDashboardLink = () => {
+    if (!user || !user.userType) return "/";
+    return `/${user.userType}-dashboard`;
+  };
+
   const handleLogout = async () => {
     // Clear client-side state immediately for a responsive feel
     sessionStorage.removeItem("cravingUser"); // Updated to match the key in Setting component
@@ -32,7 +37,7 @@ const Navbar = () => {
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6 w-full gap-5">
         {/* Logo */}
         <Link
-          to={isLogin ? "/user/dashboard" : "/"}
+          to={isLogin ? getDashboardLink() : "/"}
           className="flex items-center gap-3 shrink-0">
           <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-(--primary-color)">
             <IoRestaurant className="text-2xl text-white" />
@@ -55,7 +60,7 @@ const Navbar = () => {
             {/* Right Side: Profile & Action */}
             <div className="flex items-center gap-4 shrink-0">
               {/* User Section Link */}
-              <Link to="/user/dashboard">
+              <Link to={getDashboardLink()}>
                 <button
                   className="flex items-center gap-3 rounded-lg border border-transparent px-3 py-1.5 transition hover:border-(--primary-color)"
                   title="Go to Dashboard">
